@@ -34,6 +34,7 @@ options:
         description:
             - Automatically mount the Volume in the Server.
         type: bool
+        default: False
     state:
         description:
             - State of the Volume.
@@ -145,7 +146,7 @@ class AnsibleHCloudVolumeAttachment(AnsibleHCloud):
             if not self.module.check_mode:
                 action = self.hcloud_volume_attachment.attach(
                     server=self.hcloud_server,
-                    automount=self.module.params.get("automount"),
+                    automount=self.module.params.get("automount", False),
                 )
                 action.wait_until_finished()
 
@@ -175,7 +176,7 @@ class AnsibleHCloudVolumeAttachment(AnsibleHCloud):
             argument_spec=dict(
                 volume={"type": "str", "required": True},
                 server={"type": "str"},
-                automount={"type": "bool"},
+                automount={"type": "bool", "default": False},
                 state={
                     "choices": ["present", "absent"],
                     "default": "present",
